@@ -33,5 +33,10 @@ router.get('/:id', function(req, res, next){
     })
 })
 
+//Add a todo
+router.post('/:id', function(req,res, next){
+
+})
+
 
 module.exports = router;
