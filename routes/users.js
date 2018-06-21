@@ -35,7 +35,15 @@ router.get('/:id', function(req, res, next){
 
 //Add a todo
 router.post('/:id', function(req,res, next){
-
+  const user_id = req.params.id;
+  knex('todos')
+  .insert({
+    task: req.body.task,
+    user_id: user_id
+  })
+  .then(function(){
+    res.redirect('/users/' + user_id)
+  })
 })
 
 
