@@ -5,6 +5,7 @@ const environment = process.env.NODE_ENV || 'development';
 const knexConfig = require('../knexfile.js')[environment];
 const knex = require('knex')(knexConfig);
 
+const bcrypt = require('bcrypt-as-promised')
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   knex('users')
@@ -46,5 +47,25 @@ router.post('/:id', function(req,res, next){
   })
 })
 
+//add a user
+router.post('/', function(req,res,next){
+  const {
+    username,
+    password
+  } = req.body;
+  bcrypt.hash(password, 12)
+  .then(function(hashed_password){
+    return knex('users').insert({
+      username,
+      hashed_password
+    })
+  })
+  .then(function(){
+    res.redirect('/users')
+  })
+  .catch(function(err){
+    next(err);
+  })
+})
 
 module.exports = router;

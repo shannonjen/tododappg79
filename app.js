@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 
+var bcrypt = require('bcrypt-as-promised')
 var app = express();
 
 // view engine setup
@@ -36,13 +37,20 @@ app.post('/sign_in', function(req, res, next){
     .where('username', username)
     .first()
     .then(function(user){
-      if (user.password === password){
+      console.log("password", password);
+      console.log("hashed_password", user.hashed_password)
+      bcrypt.compare(password, user.hashed_password)
+      .then(function(){
         res.redirect('/users/'+user.id);
-      }
-      else {
+      })
+      .catch(function(){
         res.redirect('/')
-      }
+      })
     })
+    .catch(function(){
+      res.redirect('/')
+    })
+
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
