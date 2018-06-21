@@ -29,6 +29,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 
+app.post('/sign_in', function(req, res, next){
+  const username = req.body.username;
+  const password = req.body.password;
+  knex('users')
+    .where('username', username)
+    .first()
+    .then(function(user){
+      if (user.password === password){
+        res.redirect('/users/'+user.id);
+      }
+      else {
+        res.redirect('/')
+      }
+    })
+})
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
