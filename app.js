@@ -5,8 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+require('./passport');
+
+var auth = require('./routes/auth')
 var index = require('./routes/index');
 var users = require('./routes/users');
+
+const passport = require('passport');
 
 var bcrypt = require('bcrypt-as-promised')
 var app = express();
@@ -28,7 +33,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/users', passport.authenticate('jwt', {session: false}), users);
+app.use('/auth', auth);
 
 app.post('/sign_in', function(req, res, next){
   const username = req.body.username;
